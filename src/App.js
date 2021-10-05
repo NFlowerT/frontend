@@ -6,23 +6,32 @@ import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 
 //pages
 import HomePage from "./components/home/homePage/homePage";
+import Nav from './components/nav/nav';
+import GalleryPage from "./components/gallery/galleryPage";
+import LoginPge from "./components/loginPage/loginPage";
+import RegistrationPage from "./components/loginPage/registrationPage";
 
 const RouterSwitch = () => {
   return (
       <Switch>
-        <Route path="/home">
-          <HomePage/>
-        </Route>
-
+          <Route exact path="/" component={HomePage} />
+          <Route path="/gallery" component={GalleryPage}/>
+          <Route path="/login" component={LoginPge}/>
+          <Route path="/rejestration" component={RegistrationPage}/>
       </Switch>
   )
 }
 
 const App = () => {
   return (
-    <div className="App">
-        <HomePage></HomePage>
-    </div>
+      <Router>
+          <div className="App">
+              <Nav />
+              <RouterSwitch />
+          </div>
+
+      </Router>
+
   );
 }
 

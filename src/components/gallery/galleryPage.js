@@ -1,12 +1,11 @@
 import React, {Component, useEffect, useState} from 'react';
 
-const HomePage = () => {
-
+const GalleryPage = () => {
     return (
         <main>
-            <div>home</div>
+            <div>gallery</div>
         </main>
     );
 }
 
-export default HomePage;
+export default GalleryPage;
