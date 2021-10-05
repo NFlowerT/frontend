@@ -1,18 +1,18 @@
-import React, {Component, useEffect, useState} from 'react';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-const Nav= () => {
-
+const Nav = () => {
     return (
         <nav>
             <div>Logo</div>
             <ul>
-                <li>Home</li>
-                <li>Gallery</li>
-                <li>Contact</li>
+                <li><Link to={'/'}>Home</Link></li>
+                <li><Link to={'/gallery'}>Gallery</Link></li>
+                <li><Link to={'/contact'}>Contact</Link></li>
             </ul>
             <div>ikonka</div>
         </nav>
-    );
+    )
 }
 
-export default Nav;
+export default Nav

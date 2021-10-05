@@ -1,15 +1,13 @@
-import React, {Component, useEffect, useState} from 'react';
-import {Link} from "react-router-dom";
-import RegistrationPage from "./registrationPage";
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-const LoginPge= () => {
-
+const LoginPage = () => {
     return (
         <div>
             <p>zaloguj</p>
-            <Link to={"/registration"}>Rejestracja</Link>
+            <Link to={'/registration'}>Rejestracja</Link>
         </div>
-    );
+    )
 }
 
-export default LoginPge;
+export default LoginPage

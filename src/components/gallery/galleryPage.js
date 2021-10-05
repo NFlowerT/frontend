@@ -1,11 +1,11 @@
-import React, {Component, useEffect, useState} from 'react';
+import React from 'react'
 
 const GalleryPage = () => {
     return (
         <main>
             <div>gallery</div>
         </main>
-    );
+    )
 }
 
-export default GalleryPage;
+export default GalleryPage

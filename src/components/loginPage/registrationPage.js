@@ -1,13 +1,11 @@
-import React, {Component, useEffect, useState} from 'react';
-import {Link} from "react-router-dom";
+import React from 'react'
 
-const RegistrationPage= () => {
-
+const RegistrationPage = () => {
     return (
         <div>
             <p>zarejestrj sie</p>
         </div>
-    );
+    )
 }
 
-export default RegistrationPage;
+export default RegistrationPage

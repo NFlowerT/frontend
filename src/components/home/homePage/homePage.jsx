@@ -1,12 +1,11 @@
-import React, {Component, useEffect, useState} from 'react';
+import React from 'react'
 
 const HomePage = () => {
-
     return (
         <main>
             <div>home</div>
         </main>
-    );
+    )
 }
 
-export default HomePage;
+export default HomePage
