@@ -1,16 +1,37 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import './css/nav.css'
+import { BiUserCircle } from 'react-icons/bi'
+import { TiTree } from 'react-icons/ti'
 
 const Nav = () => {
+    const location = useLocation().pathname
+    console.log(location)
+
     return (
-        <nav>
-            <div>Logo</div>
-            <ul>
-                <li><Link to={'/'}>Home</Link></li>
-                <li><Link to={'/gallery'}>Gallery</Link></li>
-                <li><Link to={'/contact'}>Contact</Link></li>
+        <nav className={'nav'}>
+            <div className={'logoContainer'}>
+                <div className={'lol'}>
+                    <TiTree></TiTree>
+                </div>
+                <div className={'logoTitle' }>NFTree</div>
+            </div>
+            <ul className={'categoryContainer'}>
+                <li>
+                    <Link className={'router ' + (location === '/' ? 'selected' : ' ')} to={'/'}>HOME</Link>
+                </li>
+                <li>
+                    <Link className={'router ' + (location === '/gallery' ? 'selected' : ' ')} to={'/gallery'}>GALLERY</Link>
+                </li>
+                <li>
+                    <Link className={'router ' + (location === '/contact' ? 'selected' : ' ')} to={'/contact'}>CONTACT</Link>
+                </li>
             </ul>
-            <div>ikonka</div>
+            <div className={'accountIcon'}>
+                <Link className={'routerAccount'} to={'/'}>
+                    <BiUserCircle></BiUserCircle>
+                </Link>
+            </div>
         </nav>
     )
 }

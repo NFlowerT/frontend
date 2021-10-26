@@ -5,7 +5,7 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 // pages
-import HomePage from './components/home/homePage/homePage'
+import HomePage from './components/home/homePage'
 import Nav from './components/nav/nav'
 import GalleryPage from './components/gallery/galleryPage'
 import LoginPage from './components/loginPage/loginPage'

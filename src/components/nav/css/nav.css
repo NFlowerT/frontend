@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Scada&display=swap');
+.nav{
+    width: 100%;
+    font-family: 'Scada', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3%;
+    height: 5rem;
+
+}
+
+.logoContainer{
+    width: 150px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    align-items: center;
+    transition: all 0.2s;
+    cursor: pointer;
+    margin-left: -2rem;
+}
+.lol{
+    font-size: 3rem;
+}
+.logoTitle{
+    font-size: 2rem;
+    font-family: 'Scada', sans-serif;
+    font-weight: bold;
+    padding-bottom: 0.6rem;
+}
+
+.categoryContainer{
+    cursor: pointer;
+    list-style: none;
+}
+.categoryContainer li{
+    display: inline-block;
+    padding: 0px 50px;
+    font-weight: bold;
+    font-size: 1.7rem;
+}
+
+.router{
+    text-decoration: none;
+    color: black;
+    transition: all 0.2s ease 0s;
+    padding: 2px 10px;
+}
+.router:hover{
+    border-bottom: black 4px solid;
+}
+
+.routerAccount{
+    font-size: 2.5rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+}
+.routerAccount:hover{
+    font-size: 3rem;
+}
+.selected{
+    border-bottom: black 4px solid;
+}
