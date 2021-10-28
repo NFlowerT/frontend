@@ -23,8 +23,11 @@
     transition: all 0.2s;
     cursor: pointer;
     margin-left: -2rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
 }
-.lol{
+.logoIcon{
     font-size: 3rem;
 }
 .logoTitle{

@@ -10,12 +10,12 @@ const Nav = () => {
 
     return (
         <nav className={'nav'}>
-            <div className={'logoContainer'}>
-                <div className={'lol'}>
+            <Link className={'logoContainer'} to={'/'}>
+                <div className={'logoIcon'}>
                     <TiTree></TiTree>
                 </div>
                 <div className={'logoTitle' }>NFTree</div>
-            </div>
+            </Link>
             <ul className={'categoryContainer'}>
                 <li>
                     <Link className={'router ' + (location === '/' ? 'selected' : ' ')} to={'/'}>HOME</Link>
