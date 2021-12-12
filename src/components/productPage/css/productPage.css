@@ -37,10 +37,11 @@
 }
 .ProductPInfoList{
     list-style-type: none;
-    margin-left: 30px;
+    margin-left: 50px;
     padding: 0;
     width: 12rem;
     font-size: 1.9rem;
+    text-align: start;
 }
 .ProductPInfoTitle{
     font-weight: bold;
@@ -57,17 +58,52 @@
     height: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    position: relative;
 }
 .ProductPageProductView{
     width: 80%;
     height: 70%;
-    margin-bottom: 3rem;
     display: flex;
-    justify-content: center;
     align-items: center;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-content: center;
+    justify-content: flex-start;
 }
 .ProductPageModelImage{
     max-width: 100%;
     max-height: 100%;
+    margin-top: 5rem;
+    margin-bottom: 8rem;
 }
+.ProductPageModelName{
+    font-family: 'Scada', sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 45px;
+    text-align: center;
+
+    color: #494949;
+}
+.ProductPageDecLine1{
+    position: absolute;
+    width: 239px;
+    height: 0px;
+    border-bottom: 7px solid #000000;
+    transform: rotate(-89.26deg);
+    left: 37px;
+    bottom: 176px;
+}
+
+.ProductPageDecLine2{
+    position: absolute;
+    width: 239px;
+    height: 0px;
+    border-bottom: 7px solid #000000;
+    transform: rotate(0.74deg);
+    left: 92px;
+    bottom: 112px;
+}
+

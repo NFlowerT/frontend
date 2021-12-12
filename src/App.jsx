@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 // pages
-import HomePage from './components/home/homePage'
+import HomePage from './components/homePage/homePage'
 import Nav from './components/nav/nav'
 import GalleryPage from './components/gallery/galleryPage'
 import LoginPage from './components/loginPage/loginPage'

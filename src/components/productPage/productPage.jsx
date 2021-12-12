@@ -31,7 +31,12 @@ const ProductPage = () => {
           <div className={"productPageRights"}>
               <div className={"ProductPageProductView"}>
                   <img className={'ProductPageModelImage'} src={modelPlant}></img>
+                  <div className={"ProductPageModelName"}>
+                      Kaktus Aleksandryjski
+                  </div>
               </div>
+              <div className={"ProductPageDecLine1"}></div>
+              <div className={"ProductPageDecLine2"}></div>
           </div>
       </div>
     )
