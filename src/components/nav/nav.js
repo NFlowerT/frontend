@@ -24,7 +24,7 @@ const Nav = () => {
                     <Link className={'router ' + (location === '/gallery' ? 'selected' : ' ')} to={'/gallery'}>GALLERY</Link>
                 </li>
                 <li>
-                    <Link className={'router ' + (location === '/contact' ? 'selected' : ' ')} to={'/contact'}>CONTACT</Link>
+                    <Link className={'router ' + (location === '/catalog' ? 'selected' : ' ')} to={'/catalog'}>CONTACT</Link>
                 </li>
             </ul>
             <div className={'accountIcon'}>

@@ -13,6 +13,7 @@ import LoginPage from './components/loginPage/loginPage'
 import RegistrationPage from './components/loginPage/registrationPage'
 import ProductPage from "./components/productPage/productPage";
 import WalletCard from "./components/wallet/wallet";
+import CatalogPage from "./components/contact/catalogPage";
 
 
 const RouterSwitch = () => {
@@ -23,6 +24,7 @@ const RouterSwitch = () => {
           <Route path='/login' component={LoginPage}/>
           <Route path='/registration' component={RegistrationPage}/>
           <Route path='/productPage' component={ProductPage}/>
+          <Route path='/catalog' component={CatalogPage}/>
       </Switch>
   )
 }
