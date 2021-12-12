@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Scada&display=swap');
+
+.productPage{
+    width: 100%;
+    height: 80vh;
+    display: flex;
+}
+.productPageLefts{
+    width: 40%;
+    height: 100%;
+}
+.productPage_productinfo{
+    width: 24rem;
+    height: 30rem;
+    margin-left: 15rem;
+    margin-top: 7rem;
+
+}
+.productPageTitle{
+    position: relative;
+    margin-bottom: 4rem;
+}
+.productPageTitleText{
+    font-size: 4.5rem;
+    font-family: 'Scada', sans-serif;
+    text-align: left;
+    margin: 0;
+    font-weight: bold;
+
+}
+.productPageInfoUL{
+    position: absolute;
+    width: 188px;
+    height: 0px;
+    left: 30px;
+    border: 3px solid #000000;
+}
+.ProductPInfoList{
+    list-style-type: none;
+    margin-left: 30px;
+    padding: 0;
+    width: 12rem;
+    font-size: 1.9rem;
+}
+.ProductPInfoTitle{
+    font-weight: bold;
+    font-family: 'Scada', sans-serif;
+}
+.ProductPInfo{
+    font-family: 'Scada', sans-serif;
+    margin-bottom: 1rem;
+}
+
+
+.productPageRights{
+    width: 60%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.ProductPageProductView{
+    width: 80%;
+    height: 70%;
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.ProductPageModelImage{
+    max-width: 100%;
+    max-height: 100%;
+}

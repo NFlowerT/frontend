@@ -11,7 +11,9 @@ import Nav from './components/nav/nav'
 import GalleryPage from './components/gallery/galleryPage'
 import LoginPage from './components/loginPage/loginPage'
 import RegistrationPage from './components/loginPage/registrationPage'
+import ProductPage from "./components/productPage/productPage";
 import WalletCard from "./components/wallet/wallet";
+
 
 const RouterSwitch = () => {
   return (
@@ -20,6 +22,7 @@ const RouterSwitch = () => {
           <Route path='/gallery' component={GalleryPage}/>
           <Route path='/login' component={LoginPage}/>
           <Route path='/registration' component={RegistrationPage}/>
+          <Route path='/productPage' component={ProductPage}/>
       </Switch>
   )
 }
@@ -64,7 +67,7 @@ const App = () => {
   return (
       <Router>
           <div className='App'>
-              <WalletCard></WalletCard>
+              {/*<WalletCard></WalletCard>*/}
               <Nav />
               <RouterSwitch />
 

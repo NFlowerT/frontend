@@ -1,3 +1,4 @@
+/*
 import React, {useState} from 'react'
 import {ethers} from 'ethers'
 
@@ -65,12 +66,12 @@ const WalletCard = () => {
             <div className='accountDisplay'>
                 <h3>Address: {defaultAccount}</h3>
             </div>
-            {/*<div className='balanceDisplay'>*/}
-            {/*    <h3>Balance: {userBalance}</h3>*/}
-            {/*</div>*/}
+            {/!*<div className='balanceDisplay'>*!/}
+            {/!*    <h3>Balance: {userBalance}</h3>*!/}
+            {/!*</div>*!/}
             {errorMessage}
         </div>
     );
 }
 
-export default WalletCard;
+export default WalletCard;*/
