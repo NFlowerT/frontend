@@ -42,10 +42,7 @@ const App = () => {
         console.log("account !!!!: ", account, totalSupply, trees)
 
     })
-    window.ethereum.on('chainChanged',  () => {
-        console.log("reload44444444444444444444")
-        loadBlockChainData()
-    });
+
 
 
     useEffect(async ()=> {
