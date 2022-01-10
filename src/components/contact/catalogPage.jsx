@@ -4,7 +4,7 @@ import { BiSearch } from 'react-icons/bi'
 import { FaBars } from 'react-icons/fa'
 import SeedTile from "./seedTile";
 
-const CatalogPage = () => {
+const CatalogPage = ({contract, account, mint} ) => {
     return (
         <main className={"galleryPage"}>
             <section className={'guideSection'}>
@@ -17,7 +17,7 @@ const CatalogPage = () => {
                 </div>
             </section>
             <section className={"productsContainer"}>
-                  <SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/>
+                  <SeedTile contract={contract} account={account} mint={mint}/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/>
             </section>
         </main>
     )

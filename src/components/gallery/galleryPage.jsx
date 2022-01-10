@@ -5,7 +5,21 @@ import { FaBars } from 'react-icons/fa'
 import ProductTile from "./productTile";
 
 
-const GalleryPage = () => {
+const GalleryPage = ({ trees, totalSupply }) => {
+
+    const renderProductTile = () => {
+        const productTiles = []
+        for (let i = 0; i<totalSupply; i++) {
+            console.log(i)
+            productTiles.push(<ProductTile key={i} />)
+        }
+        return (
+            <section className={"productsContainer"}>
+                {productTiles}
+            </section>
+        )
+    }
+
     return (
         <main className={"galleryPage"}>
             <section className={'guideSection'}>
@@ -17,13 +31,7 @@ const GalleryPage = () => {
                     FILTR <FaBars className={'filterIcon'}/>
                 </div>
             </section>
-            <section className={"productsContainer"}>
-                <ProductTile/>
-                <ProductTile/>
-                <ProductTile/>
-                <ProductTile/>
-                <ProductTile/><ProductTile/><ProductTile/><ProductTile/><ProductTile/><ProductTile/><ProductTile/><ProductTile/><ProductTile/><ProductTile/><ProductTile/>
-            </section>
+            {renderProductTile()}
         </main>
     )
 }

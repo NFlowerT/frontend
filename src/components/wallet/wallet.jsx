@@ -1,21 +1,18 @@
-/*
 import React, {useState} from 'react'
-import {ethers} from 'ethers'
 
-const WalletCard = () => {
+const WalletCard = ({ account, setAccount }) => {
 
     const [errorMessage, setErrorMessage] = useState(null);
-    const [defaultAccount, setDefaultAccount] = useState(null);
-    // const [userBalance, setUserBalance] = useState(null);
     const [connButtonText, setConnButtonText] = useState('Connect Wallet');
 
-    const connectWalletHandler = () => {
+    const connectWalletHandler = async() => {
         if (window.ethereum && window.ethereum.isMetaMask) {
             console.log('MetaMask Here!');
 
-            window.ethereum.request({ method: 'eth_requestAccounts'})
+            await window.ethereum.request({ method: 'eth_requestAccounts'})
                 .then(result => {
-                    accountChangedHandler(result[0]);
+                    setAccount(result[0]);
+                    console.log("connected to ", account)
                     setConnButtonText('Wallet Connected');
                     // getAccountBalance(result[0]);
                 })
@@ -31,47 +28,32 @@ const WalletCard = () => {
     }
 
     // update account, will cause component re-render
-    const accountChangedHandler = (newAccount) => {
-        setDefaultAccount(newAccount);
-        // getAccountBalance(newAccount.toString());
-    }
-
-    // get account balance
-    // const getAccountBalance =  (account) => {
-    //     console.log("get balance ", userBalance)
-    //     window.ethereum.request({method: 'eth_getBalance', params: [account, 'latest']})
-    //         .then(balance => {
-    //             console.log("get balanceeee", ethers.utils.formatEther(balance))
-    //             setUserBalance(ethers.utils.formatEther(balance));
-    //         })
-    //         .catch(error => {
-    //             setErrorMessage(error.message);
-    //         });
-    // };
+    // const accountChangedHandler = (newAccount) => {
+    //     setAccount(newAccount);
+    //     console.log("wallet ustawienie allount na ", account)
+    //     // getAccountBalance(newAccount.toString());
+    // }
 
     const chainChangedHandler = () => {
         // reload the page to avoid any errors with chain change mid use of application
         window.location.reload();
     }
 
-
     // listen for account changes
-    window.ethereum.on('accountsChanged', accountChangedHandler);
-
-    window.ethereum.on('chainChanged', chainChangedHandler);
+    window.ethereum.on('accountsChanged',  connectWalletHandler);
 
     return (
         <div className='walletCard'>
             <button onClick={connectWalletHandler}>{connButtonText}</button>
             <div className='accountDisplay'>
-                <h3>Address: {defaultAccount}</h3>
+                <h3>Address: {account}</h3>
             </div>
-            {/!*<div className='balanceDisplay'>*!/}
-            {/!*    <h3>Balance: {userBalance}</h3>*!/}
-            {/!*</div>*!/}
+            <div className='balanceDisplay'>
+            {/*<h3>Balance: {userBalance}</h3>*/}
+            </div>
             {errorMessage}
         </div>
     );
 }
 
-export default WalletCard;*/
+export default WalletCard;

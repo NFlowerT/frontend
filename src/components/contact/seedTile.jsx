@@ -3,8 +3,8 @@ import './css/seedTile.css'
 import seedImg from './images/seed.png'
 import {Link} from "react-router-dom";
 
+const SeedTile = ({ mint }) => {
 
-const SeedTile = () => {
     return (
         <Link className={'productPageLink'} to={'/productPage'}>
             <div className={"productTile"}>
@@ -14,6 +14,7 @@ const SeedTile = () => {
                 </div>
                 <div className={"productTitle"}>Nasionka twojej starej</div>
             </div>
+            <button onClick={mint}>kup</button>
         </Link>
     )
 }
