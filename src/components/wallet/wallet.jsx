@@ -20,7 +20,6 @@ const WalletCard = ({ account, setAccount }) => {
                     setErrorMessage(error.message);
 
                 });
-            window.ethereum.on('accountsChanged',  connectWalletHandler);
 
         } else {
             console.log('Need to install MetaMask');
@@ -41,6 +40,9 @@ const WalletCard = ({ account, setAccount }) => {
     }
 
     // listen for account changes
+    if(window.ethereum){
+        window.ethereum.on('accountsChanged',  connectWalletHandler);
+    }
 
 
     return (

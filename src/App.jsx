@@ -38,10 +38,10 @@ const App = () => {
     const [totalSupply, setTotalSupply] = useState(0)
     const [trees, setTrees] = useState([])
 
-    useEffect(() => {
+    useEffect(async () => {
         console.log("account !!!!: ", account, totalSupply, trees)
-
-    })
+        await loadBlockChainData()
+    },[])
 
 
 
@@ -55,7 +55,7 @@ const App = () => {
                    loadWeb3(setAccount)
             })
         }
-        // await loadBlockChainData()
+
     }, [account])
 
 
@@ -75,6 +75,7 @@ const App = () => {
     }
 
     const loadBlockChainData = async() => {
+        console.log("load blockchaindata")
         const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
         console.log(web3)
         const networkId = await web3.eth.net.getId()
