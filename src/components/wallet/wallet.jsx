@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-const WalletCard = ({ account, setAccount }) => {
+const WalletCard = ({ account, setAccount,loadWeb3 }) => {
 
     const [errorMessage, setErrorMessage] = useState(null);
     const [connButtonText, setConnButtonText] = useState('Connect Wallet');
@@ -10,10 +10,11 @@ const WalletCard = ({ account, setAccount }) => {
             console.log('MetaMask Here!');
 
             await window.ethereum.request({ method: 'eth_requestAccounts'})
-                .then(result => {
+                .then(async result => {
                     setAccount(result[0]);
                     console.log("connected to ", account)
                     setConnButtonText('Wallet Connected');
+                    await loadWeb3()
                     // getAccountBalance(result[0]);
                 })
                 .catch(error => {

@@ -4,11 +4,11 @@ import modelPlant from './images/model.png'
 import {Link} from "react-router-dom";
 
 
-const ProductTile = ({ key }) => {
+const ProductTile = ({ id }) => {
     return (
         <Link className={'productPageLink'} to={'/productPage'}>
             <div className={"productTile"}>
-                <div className={"productPrice"}>id drzewka: {key}</div>
+                <div className={"productPrice"}>id drzewka: {id}</div>
                 <div className={"productImage"}>
                     <img className={'modelImage'} src={modelPlant} />
                 </div>

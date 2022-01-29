@@ -17,7 +17,7 @@ const CatalogPage = ({contract, account, mint} ) => {
                 </div>
             </section>
             <section className={"productsContainer"}>
-                  <SeedTile contract={contract} account={account} mint={mint}/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/><SeedTile/>
+                  <SeedTile contract={contract} account={account} mint={mint}/>
             </section>
         </main>
     )

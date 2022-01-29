@@ -13,6 +13,7 @@ const SeedTile = ({ mint }) => {
                     <img className={'modelImage'} src={seedImg} />
                 </div>
                 <div className={"productTitle"}>Nasionka twojej starej</div>
+
             </div>
             <button onClick={mint}>kup</button>
         </Link>
