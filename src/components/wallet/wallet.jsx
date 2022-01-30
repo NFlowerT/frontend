@@ -1,49 +1,41 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
 const WalletCard = ({ account, setAccount,loadWeb3 }) => {
 
     const [errorMessage, setErrorMessage] = useState(null);
     const [connButtonText, setConnButtonText] = useState('Connect Wallet');
 
+    useEffect(() => {
+        if(window.ethereum && window.ethereum.isMetaMask){
+            window.ethereum.on('accountsChanged',  connectAutoWalletHandler);
+        }
+    }, []);
+
+    //when user change account in MetaMask wallet
+    const connectAutoWalletHandler = (account) => {
+        alert(account[0])
+        console.log("connectAutoWalletHandler")
+        setAccount(account[0])
+    }
+
+    //when user click connection button
     const connectWalletHandler = async() => {
         if (window.ethereum && window.ethereum.isMetaMask) {
-            console.log('MetaMask Here!');
-
             await window.ethereum.request({ method: 'eth_requestAccounts'})
                 .then(async result => {
                     setAccount(result[0]);
-                    console.log("connected to ", account)
                     setConnButtonText('Wallet Connected');
-                    await loadWeb3()
-                    // getAccountBalance(result[0]);
+                    // await loadWeb3()
                 })
                 .catch(error => {
                     setErrorMessage(error.message);
-
                 });
-
         } else {
-            console.log('Need to install MetaMask');
             setErrorMessage('Please install MetaMask browser extension to interact');
         }
+
     }
 
-    // update account, will cause component re-render
-    // const accountChangedHandler = (newAccount) => {
-    //     setAccount(newAccount);
-    //     console.log("wallet ustawienie allount na ", account)
-    //     // getAccountBalance(newAccount.toString());
-    // }
-
-    const chainChangedHandler = () => {
-        // reload the page to avoid any errors with chain change mid use of application
-        window.location.reload();
-    }
-
-    // listen for account changes
-    if(window.ethereum){
-        window.ethereum.on('accountsChanged',  connectWalletHandler);
-    }
 
 
     return (
@@ -53,7 +45,6 @@ const WalletCard = ({ account, setAccount,loadWeb3 }) => {
                 <h3>Address: {account}</h3>
             </div>
             <div className='balanceDisplay'>
-            {/*<h3>Balance: {userBalance}</h3>*/}
             </div>
             {errorMessage}
         </div>

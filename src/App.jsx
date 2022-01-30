@@ -33,6 +33,7 @@ const RouterSwitch = ({ contract, account, trees, mint, totalSupply, accountsTre
 }
 
 const App = () => {
+    const [provider, setProvider] = useState(undefined)
     const [account, setAccount] = useState("")
     const [contract, setContract] = useState(undefined)
     const [totalSupply, setTotalSupply] = useState(0)
@@ -40,70 +41,27 @@ const App = () => {
     const [accountsTrees, setAccountsTrees] = useState([])
     const [accountBalance, setAccountBalance] = useState(0)
 
-    useEffect(async () => {
-        console.log("account !!!!: ", account, totalSupply, trees)
-        await loadBlockChainData()
-    },[])
-
-
 
     useEffect(async ()=> {
-        if(window.eth) {
-            window.eth.on('chainChanged', () => {
-                window.location.reload();
-            })
-            window.eth.on('accountsChanged', async() => {
-                console.log("zmiana acount")
-                   await loadWeb3()
-                await loadBlockChainData()
-            })
-        }
-        //await loadBlockChainData()
-
+        await loadWeb3()
+        await loadBlockChainData()
     }, [account])
 
 
     const loadWeb3 = async () => {
-        if (typeof window.ethereum !== 'undefined') { //czy jest metamask
-            console.log('MetaMask is installed!');
+        if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
             await window.ethereum.enable()
-            // const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-            // const account = accounts[0];
-            // setAccount(account)
-            console.log(account, "set account w loadweb3", contract, account)
-            //await loadBlockChainData()
-            if(contract!=undefined && account!= undefined && account!= ""){
-                console.log("kjodsgnvdsfkgvnkdfjsl")
-                let balance = await contract.methods.balanceOf(account).call();
-                console.log("----------balans: ", balance)
-                setAccountBalance(balance)
-            }
 
-        }
-        // else{ // przekierowanie do metamask
-        //     console.log("install Metamask")
-        // }
+            // await loadBlockChainData()
 
-    }
+            //load active account's balance and trees
+            if(contract!==undefined && account!== undefined && account!== "" && account!=="0x"){
 
-    const loadBlockChainData = async() => {
-        console.log("load blockchaindata")
-        const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
-        //console.log(web3)
-        const networkId = await web3.eth.net.getId()
-        const networkData = Test.networks[networkId]
-
-        if(networkData){
-            const abi = Test.abi
-            const address = networkData.address
-            const contract = new web3.eth.Contract(abi, address)
-            setContract(contract)
-            const totalSupply = await contract.methods.totalSupply().call()
-            setTotalSupply(totalSupply)
-            if(account!=undefined && account!="" && account!="0x0"){
+                console.log("load my trees and balance")
                 let balance = await contract.methods.balanceOf(account).call();
                 console.log("balans: ", balance)
                 setAccountBalance(balance)
+
 
                 //add current account's trees
                 for(var i = 0; i<accountBalance; i++){
@@ -113,12 +71,49 @@ const App = () => {
                 }
                 console.log("[[[ ", accountsTrees)
             }
+        }
+        else{
+            console.log("install Metamask")
+        }
 
-            // add trees to state
+
+    }
+
+    const loadBlockChainData = async() => {
+        console.log("load blockchaindata")
+        const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
+
+        const networkId = await web3.eth.net.getId()
+        const networkData = Test.networks[networkId]
+
+        if(networkData){
+            const abi = Test.abi
+            const address = networkData.address
+            //load contract
+            const contract = new web3.eth.Contract(abi, address)
+            setContract(contract)
+            //load totalSupply
+            const totalSupply = await contract.methods.totalSupply().call()
+            setTotalSupply(totalSupply)
+
+            // load all trees
             for(var i = 1; i<=totalSupply; i++){
                 let tree = await contract.methods.trees(i-1).call()
                 setTrees([...trees, tree])
             }
+            // if(account!=undefined && account!="" && account!="0x0"){
+            //     let balance = await contract.methods.balanceOf(account).call();
+            //     console.log("balans: ", balance)
+            //     setAccountBalance(balance)
+            //
+            //     //add current account's trees
+            //     for(var i = 0; i<accountBalance; i++){
+            //         let tree = await contract.methods.tokenOfOwnerByIndex(account, i).call()
+            //         console.log(tree, "add current account's trees")
+            //         setAccountsTrees([...accountsTrees, tree])
+            //     }
+            //     console.log("[[[ ", accountsTrees)
+            // }
 
         }
         console.log("ilosc dtrzewek: ", trees, totalSupply)
