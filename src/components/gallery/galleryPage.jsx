@@ -1,11 +1,17 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import './css/galleryPage.css'
 import { BiSearch } from 'react-icons/bi'
 import { FaBars } from 'react-icons/fa'
 import ProductTile from "./productTile";
 
 
-const GalleryPage = ({ trees, totalSupply, accountsTrees }) => {
+const GalleryPage = ({ trees, totalSupply, accountsTrees, accountBalance }) => {
+    useEffect(()=>{
+        console.log("RELOOOOOOOOOOOOOAAAAAAADDDDDDDD", accountBalance)
+
+    }, [totalSupply, accountsTrees, accountBalance, trees])
+
+
     // to test withour real blockchain trees
     const renderProductTileAll = () => {
         const productTiles = []
@@ -23,7 +29,7 @@ const GalleryPage = ({ trees, totalSupply, accountsTrees }) => {
     const renderProductTileAccount = () => {
             const productTiles = []
             console.log("tile",accountsTrees)
-            for (let i = 0; i<accountsTrees.length; i++) {
+            for (let i = 0; i<accountBalance; i++) {
                 console.log(i, "tile")
                 productTiles.push(<ProductTile id={trees.length[i]} />)
             }

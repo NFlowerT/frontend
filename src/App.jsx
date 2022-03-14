@@ -19,11 +19,11 @@ import WalletCard from "./components/wallet/wallet";
 import CatalogPage from "./components/contact/catalogPage";
 
 
-const RouterSwitch = ({ contract, account, trees, mint, totalSupply, accountsTrees }) => {
+const RouterSwitch = ({ contract, account, trees, mint, totalSupply, accountsTrees, accountBalance }) => {
   return (
       <Switch>
           <Route exact path='/' component={HomePage} />
-          <Route path='/gallery' component={() => (<GalleryPage trees={trees} totalSupply={totalSupply} accountsTrees={accountsTrees}/>)}/>
+          <Route path='/gallery' component={() => (<GalleryPage trees={trees} totalSupply={totalSupply} accountsTrees={accountsTrees} accountBalance={accountBalance}/>)}/>
           <Route path='/login' component={LoginPage}/>
           <Route path='/registration' component={RegistrationPage}/>
           <Route path='/productPage' component={ProductPage}/>
@@ -56,20 +56,8 @@ const App = () => {
 
             //load active account's balance and trees
             if(contract!==undefined && account!== undefined && account!== "" && account!=="0x"){
+                await loadActiveAccountTrees()
 
-                console.log("load my trees and balance")
-                let balance = await contract.methods.balanceOf(account).call();
-                console.log("balans: ", balance)
-                setAccountBalance(balance)
-
-
-                //add current account's trees
-                for(var i = 0; i<accountBalance; i++){
-                    let tree = await contract.methods.tokenOfOwnerByIndex(account, i).call()
-                    console.log(tree, "add current account's trees")
-                    setAccountsTrees([...accountsTrees, tree])
-                }
-                console.log("[[[ ", accountsTrees)
             }
         }
         else{
@@ -78,9 +66,24 @@ const App = () => {
 
 
     }
+    const loadActiveAccountTrees = async () => {
+        console.log("load my trees and balance")
+        let balance = await contract.methods.balanceOf(account).call();
+        console.log("balans: ", balance)
+        setAccountBalance(balance)
+
+
+        //add current account's trees
+        for(var i = 0; i<accountBalance; i++){
+            let tree = await contract.methods.tokenOfOwnerByIndex(account, i).call()
+            console.log(tree, "add current account's trees")
+            setAccountsTrees([...accountsTrees, tree])
+        }
+        console.log("[[[ ", accountsTrees)
+    }
 
     const loadBlockChainData = async() => {
-        console.log("load blockchaindata")
+        console.log("load blockchaindata", account)
         const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
         const networkId = await web3.eth.net.getId()
@@ -101,19 +104,11 @@ const App = () => {
                 let tree = await contract.methods.trees(i-1).call()
                 setTrees([...trees, tree])
             }
-            // if(account!=undefined && account!="" && account!="0x0"){
-            //     let balance = await contract.methods.balanceOf(account).call();
-            //     console.log("balans: ", balance)
-            //     setAccountBalance(balance)
-            //
-            //     //add current account's trees
-            //     for(var i = 0; i<accountBalance; i++){
-            //         let tree = await contract.methods.tokenOfOwnerByIndex(account, i).call()
-            //         console.log(tree, "add current account's trees")
-            //         setAccountsTrees([...accountsTrees, tree])
-            //     }
-            //     console.log("[[[ ", accountsTrees)
-            // }
+            if(account!== undefined && account!== "" && account!=="0x"){
+                console.log("-------")
+                await loadActiveAccountTrees()
+
+            }
 
         }
         console.log("ilosc dtrzewek: ", trees, totalSupply)
@@ -125,12 +120,16 @@ const App = () => {
         if(account!="" && account!= undefined){
             console.log(totalSupply, "total supply przed")
             await contract.methods.mintTree().send({ from: account })
-                .once('receipt', (receipt) => {
+                .once('receipt', async(receipt) => {
                     console.log("kupiono drzewk0")
+                    await loadBlockChainData()
+                    console.log(totalSupply, "total supply po")
+                    await loadWeb3()
                 })
-            await loadBlockChainData()
-            console.log(totalSupply, "total supply po")
+            // await loadBlockChainData()
+            // console.log(totalSupply, "total supply po")
         }
+        await loadWeb3()
 
     }
 
@@ -139,9 +138,9 @@ const App = () => {
   return (
       <Router>
           <div className='App'>
-              <WalletCard account={account} setAccount={setAccount} loadWeb3={async () => {loadWeb3()}}></WalletCard>
+              <WalletCard account={account} setAccount={setAccount} loadWeb3={loadWeb3} loadBlockChainData={async()=>{await loadBlockChainData()}}></WalletCard>
               <Nav />
-              <RouterSwitch contract={contract} account={account} trees={trees} mint={mint} totalSupply={totalSupply} accountsTrees={accountsTrees}/>
+              <RouterSwitch contract={contract} account={account} trees={trees} mint={mint} totalSupply={totalSupply} accountsTrees={accountsTrees} accountBalance={accountBalance}/>
 
           </div>
 

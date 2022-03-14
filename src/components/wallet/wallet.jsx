@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 
-const WalletCard = ({ account, setAccount,loadWeb3 }) => {
+const WalletCard = ({ account, setAccount,loadWeb3, loadBlockChainData }) => {
 
     const [errorMessage, setErrorMessage] = useState(null);
     const [connButtonText, setConnButtonText] = useState('Connect Wallet');
@@ -8,6 +8,7 @@ const WalletCard = ({ account, setAccount,loadWeb3 }) => {
     useEffect(() => {
         if(window.ethereum && window.ethereum.isMetaMask){
             window.ethereum.on('accountsChanged',  connectAutoWalletHandler);
+            window.ethereum.on('chainChanged', loadBlockChainData);
         }
     }, []);
 
