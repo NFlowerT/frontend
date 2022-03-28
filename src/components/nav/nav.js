@@ -27,6 +27,9 @@ const Nav = () => {
                     <Link className={'router ' + (location === '/catalog' ? 'selected' : ' ')} to={'/catalog'}>CATALOG</Link>
                 </li>
             </ul>
+            <div className={"wallet"}>
+
+            </div>
             <div className={'accountIcon'}>
                 <Link className={'routerAccount'} to={'/'}>
                     <BiUserCircle></BiUserCircle>
