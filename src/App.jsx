@@ -3,6 +3,7 @@ import './App.css'
 // blockchain data
 import Web3 from "web3"
 import Test from '../src/abis/Test.json'
+import HelloWorld from '../src/abis/HelloWorld.json'
 
 // components
 import React, { useState, useEffect } from 'react'
@@ -87,10 +88,10 @@ const App = () => {
         const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
         const networkId = await web3.eth.net.getId()
-        const networkData = Test.networks[networkId]
+        const networkData = HelloWorld.networks[networkId]
 
         if(networkData){
-            const abi = Test.abi
+            const abi = HelloWorld.abi
             const address = networkData.address
             //load contract
             const contract = new web3.eth.Contract(abi, address)
