@@ -42,6 +42,17 @@ const App = () => {
     const [accountsTrees, setAccountsTrees] = useState([])
     const [accountBalance, setAccountBalance] = useState(0)
 
+    useEffect(async() => {
+        if(window.ethereum) {
+            window.ethereum.on('chainChanged', async() => {
+                await loadWeb3()
+                await loadBlockChainData()
+            })
+            window.ethereum.on('accountsChanged', async() => {
+                await loadWeb3()
+                await loadBlockChainData()
+            })
+        }})
 
     useEffect(async ()=> {
         await loadWeb3()
@@ -93,26 +104,44 @@ const App = () => {
         if(networkData){
             const abi = HelloWorld.abi
             const address = networkData.address
+
             //load contract
             const contract = new web3.eth.Contract(abi, address)
             setContract(contract)
+
             //load totalSupply
             const totalSupply = await contract.methods.totalSupply().call()
             setTotalSupply(totalSupply)
 
+            //load requests to mint tree
+            try{
+                for(var i = 0; ; i++){
+                    let request = await contract.methods.requests(i).call()
+                    console.log(request, "request", i )
+                }
+            }
+            catch {
+                console.log("koniec requestów")
+            }
+
+
             // load all trees
-            for(var i = 1; i<=totalSupply; i++){
-                let tree = await contract.methods.trees(i-1).call()
-                setTrees([...trees, tree])
+            try{
+                let treesTab = []
+                for(var i = 0; i<=totalSupply; i++){
+                    let tree = await contract.methods.trees(i).call()
+                    treesTab.push(tree)
+                }
+                setTrees(treesTab)
             }
+            catch {
+                console.log("koniec drzew")
+            }
+
             if(account!== undefined && account!== "" && account!=="0x"){
-                console.log("-------")
                 await loadActiveAccountTrees()
-
             }
-
         }
-        console.log("ilosc dtrzewek: ", trees, totalSupply)
     }
 
     const mint = async () => {
@@ -120,7 +149,7 @@ const App = () => {
 
         if(account!="" && account!= undefined){
             console.log(totalSupply, "total supply przed")
-            await contract.methods.mintTree().send({ from: account })
+            await contract.methods.requestTree().send({ from: account, value: Web3.utils.toWei(String(1), 'ether')})
                 .once('receipt', async(receipt) => {
                     console.log("kupiono drzewk0")
                     await loadBlockChainData()

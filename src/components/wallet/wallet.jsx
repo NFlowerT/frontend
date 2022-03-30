@@ -5,12 +5,12 @@ const WalletCard = ({ account, setAccount,loadWeb3, loadBlockChainData }) => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [connButtonText, setConnButtonText] = useState('Connect Wallet');
 
-    useEffect(() => {
-        if(window.ethereum && window.ethereum.isMetaMask){
-            window.ethereum.on('accountsChanged',  connectAutoWalletHandler);
-            window.ethereum.on('chainChanged', loadBlockChainData);
-        }
-    }, []);
+    // useEffect(() => {
+    //     if(window.ethereum && window.ethereum.isMetaMask){
+    //         window.ethereum.on('accountsChanged',  connectAutoWalletHandler);
+    //         window.ethereum.on('chainChanged', loadBlockChainData);
+    //     }
+    // }, []);
 
     //when user change account in MetaMask wallet
     const connectAutoWalletHandler = (account) => {

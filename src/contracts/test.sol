@@ -106,7 +106,7 @@ contract HelloWorld is ERC721,ERC721Enumerable{
     function mintTree(string memory _genes) external onlyOwner() isUnderMax(){
         _safeMint(requests[newTokenId].requesting, newTokenId);
         Tree memory tree = Tree(_genes,block.timestamp);
-        trees[newTokenId] = tree;
+        trees.push(tree);
         newTokenId += 1;
     }
 
