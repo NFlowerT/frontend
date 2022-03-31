@@ -6,18 +6,14 @@ import ProductTile from "./productTile";
 
 
 const GalleryPage = ({ trees, totalSupply, accountsTrees, accountBalance }) => {
-    useEffect(()=>{
-        console.log("RELOOOOOOOOOOOOOAAAAAAADDDDDDDD", accountBalance)
-
-    }, [totalSupply, accountsTrees, accountBalance, trees])
 
 
     // to test withour real blockchain trees
     const renderProductTileAll = () => {
         const productTiles = []
         for (let i = 0; i<totalSupply; i++) {
-            console.log(i, "tilee", accountsTrees)
-            productTiles.push(<ProductTile id={i} />)
+            console.log(trees[i].genes, "tilee", trees)
+            productTiles.push(<ProductTile id={trees[i].genes} />)
         }
         return (
             <section className={"productsContainer"}>
@@ -30,8 +26,8 @@ const GalleryPage = ({ trees, totalSupply, accountsTrees, accountBalance }) => {
             const productTiles = []
             console.log("tile",accountsTrees)
             for (let i = 0; i<accountBalance; i++) {
-                console.log(i, "tile")
-                productTiles.push(<ProductTile id={trees.length[i]} />)
+                console.log(accountsTrees[i], "tile")
+                productTiles.push(<ProductTile id={accountsTrees[i].genes} />)
             }
             return (
                 <section className={"productsContainer"}>
@@ -52,9 +48,9 @@ const GalleryPage = ({ trees, totalSupply, accountsTrees, accountBalance }) => {
                     FILTR <FaBars className={'filterIcon'}/>
                 </div>
             </section>
-            {renderProductTileAll()}
+            {(trees.length)?renderProductTileAll():null}
 
-            <div style={style}>your trees {renderProductTileAccount()}</div>
+            <div style={style}>your trees {(accountsTrees.length)?renderProductTileAccount() : null}</div>
             {/*<div style={style}>{renderProductTile(accountsTrees)}</div>*/}
 
         </main>

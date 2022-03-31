@@ -2,6 +2,7 @@ import './App.css'
 
 // blockchain data
 import Web3 from "web3"
+const EthereumEvents = require('ethereum-events');
 import Test from '../src/abis/Test.json'
 import HelloWorld from '../src/abis/HelloWorld.json'
 
@@ -41,23 +42,34 @@ const App = () => {
     const [trees, setTrees] = useState([])
     const [accountsTrees, setAccountsTrees] = useState([])
     const [accountBalance, setAccountBalance] = useState(0)
+    const [loadData, setLoadData] = useState()
 
-    useEffect(async() => {
-        if(window.ethereum) {
-            window.ethereum.on('chainChanged', async() => {
-                await loadWeb3()
-                await loadBlockChainData()
-            })
-            window.ethereum.on('accountsChanged', async() => {
-                await loadWeb3()
-                await loadBlockChainData()
-            })
-        }})
+
+    // useEffect(async() => {
+        // if(window.ethereum) {
+        //     window.ethereum.on('chainChanged', async() => {
+        //         alert("zmiana chaina")
+        //         await loadWeb3()
+        //         await loadBlockChainData()
+        //     })
+        //     window.ethereum.on('accountsChanged', async() => {
+        //         await loadWeb3()
+        //         await loadBlockChainData()
+        //     })
+        // }
+    // setInterval(loadBlockChainData, 10000)
+    // })
 
     useEffect(async ()=> {
+        //clearInterval(loadInterval)
         await loadWeb3()
         await loadBlockChainData()
+        //let loadInterval=setInterval(loadBlockChainData, 15000)
     }, [account])
+    useEffect(()=>{
+        console.log(trees)
+    },[trees])
+
 
 
     const loadWeb3 = async () => {
@@ -80,18 +92,38 @@ const App = () => {
     }
     const loadActiveAccountTrees = async () => {
         console.log("load my trees and balance")
-        let balance = await contract.methods.balanceOf(account).call();
-        console.log("balans: ", balance)
-        setAccountBalance(balance)
+        if(contract){
+            let balance = await contract.methods.balanceOf(account).call();
+            console.log("balans: ", balance)
+            setAccountBalance(balance)
 
 
-        //add current account's trees
-        for(var i = 0; i<accountBalance; i++){
-            let tree = await contract.methods.tokenOfOwnerByIndex(account, i).call()
-            console.log(tree, "add current account's trees")
-            setAccountsTrees([...accountsTrees, tree])
+            //add current account's trees
+
+            let treesTab = []
+            try{
+                for(var i = 0; i<=totalSupply; i++){
+                    let tokenId = await contract.methods.tokenOfOwnerByIndex(account, i).call()
+                    let tree = await contract.methods.trees(tokenId).call()
+                    treesTab.push(tree)
+                }
+            }
+            catch {
+                console.log("koniec drzew")
+            }
+            finally {
+                console.log(treesTab)
+                setAccountsTrees([...treesTab])
+            }
+
+            // for(var i = 0; ; i++){
+            //     let tree = await contract.methods.tokenOfOwnerByIndex(account, i).call()
+            //     console.log(tree, "add current account's trees")
+            //     setAccountsTrees([...accountsTrees, tree])
+            // }
+            console.log("[[[ ", accountsTrees)
         }
-        console.log("[[[ ", accountsTrees)
+
     }
 
     const loadBlockChainData = async() => {
@@ -108,6 +140,32 @@ const App = () => {
             //load contract
             const contract = new web3.eth.Contract(abi, address)
             setContract(contract)
+
+            // const contracts = [{
+            //         name: 'HelloWorld',
+            //         address: address,
+            //         abi:abi,
+            //     }];
+            // const options = {
+            //     pollInterval: 13000, // period between polls in milliseconds (default: 13000)
+            //     confirmations: 12,   // n° of confirmation blocks (default: 12)
+            //     chunkSize: 10000,    // n° of blocks to fetch at a time (default: 10000)
+            //     concurrency: 10,     // maximum n° of concurrent web3 requests (default: 10)
+            //     backoff: 1000        // retry backoff in milliseconds (default: 1000)
+            // };
+            // const ethereumEvents = new EthereumEvents(web3, contracts, options);
+            // ethereumEvents.start();
+            // alert(ethereumEvents.isRunning())
+            // ethereumEvents.on('block.confirmed', (blockNumber, events, done) => {
+            //     alert("NOWY BLOK")
+            //
+            // });
+            // ethereumEvents.on('error', err => {
+            //
+            //     alert("error")
+            //
+            // });
+
 
             //load totalSupply
             const totalSupply = await contract.methods.totalSupply().call()
@@ -126,16 +184,18 @@ const App = () => {
 
 
             // load all trees
+            let treesTab = []
             try{
-                let treesTab = []
                 for(var i = 0; i<=totalSupply; i++){
                     let tree = await contract.methods.trees(i).call()
                     treesTab.push(tree)
                 }
-                setTrees(treesTab)
             }
             catch {
                 console.log("koniec drzew")
+            }
+            finally {
+                setTrees([...treesTab])
             }
 
             if(account!== undefined && account!== "" && account!=="0x"){
@@ -152,9 +212,10 @@ const App = () => {
             await contract.methods.requestTree().send({ from: account, value: Web3.utils.toWei(String(1), 'ether')})
                 .once('receipt', async(receipt) => {
                     console.log("kupiono drzewk0")
-                    await loadBlockChainData()
+
                     console.log(totalSupply, "total supply po")
                     await loadWeb3()
+                    //await loadBlockChainData()
                 })
             // await loadBlockChainData()
             // console.log(totalSupply, "total supply po")
