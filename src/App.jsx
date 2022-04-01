@@ -21,28 +21,29 @@ import WalletCard from "./components/wallet/wallet";
 import CatalogPage from "./components/contact/catalogPage";
 
 
-const RouterSwitch = ({ contract, account, trees, mint, totalSupply, accountsTrees, accountBalance }) => {
+const RouterSwitch = ({ contract, account, trees, mint, totalSupply, accountsTrees, accountBalance, putOnSale, treesOnSale }) => {
   return (
       <Switch>
           <Route exact path='/' component={HomePage} />
-          <Route path='/gallery' component={() => (<GalleryPage trees={trees} totalSupply={totalSupply} accountsTrees={accountsTrees} accountBalance={accountBalance}/>)}/>
+          <Route path='/gallery' component={() => (<GalleryPage trees={trees} totalSupply={totalSupply} accountsTrees={accountsTrees} accountBalance={accountBalance} putOnSale={putOnSale}/>)}/>
           <Route path='/login' component={LoginPage}/>
           <Route path='/registration' component={RegistrationPage}/>
           <Route path='/productPage' component={ProductPage}/>
-          <Route path='/catalog' component={() =>(<CatalogPage contract={contract} account={account} mint={mint}/>)}/>
+          <Route path='/catalog' component={() =>(<CatalogPage contract={contract} account={account} mint={mint} treesOnSale={treesOnSale}/>)}/>
       </Switch>
   )
 }
 
 const App = () => {
-    const [provider, setProvider] = useState(undefined)
+    //const [provider, setProvider] = useState(undefined)
     const [account, setAccount] = useState("")
     const [contract, setContract] = useState(undefined)
     const [totalSupply, setTotalSupply] = useState(0)
     const [trees, setTrees] = useState([])
+    const [treesOnSale, setTreesOnSale] = useState([])
     const [accountsTrees, setAccountsTrees] = useState([])
     const [accountBalance, setAccountBalance] = useState(0)
-    const [loadData, setLoadData] = useState()
+    //const [loadData, setLoadData] = useState()
 
 
     // useEffect(async() => {
@@ -105,7 +106,8 @@ const App = () => {
                 for(var i = 0; i<=totalSupply; i++){
                     let tokenId = await contract.methods.tokenOfOwnerByIndex(account, i).call()
                     let tree = await contract.methods.trees(tokenId).call()
-                    treesTab.push(tree)
+                    let treeObj = {"id":tokenId, "tree":tree}
+                    treesTab.push(treeObj)
                 }
             }
             catch {
@@ -172,15 +174,15 @@ const App = () => {
             setTotalSupply(totalSupply)
 
             //load requests to mint tree
-            try{
-                for(var i = 0; ; i++){
-                    let request = await contract.methods.requests(i).call()
-                    console.log(request, "request", i )
-                }
-            }
-            catch {
-                console.log("koniec requestów")
-            }
+            // try{
+            //     for(var i = 0; ; i++){
+            //         let request = await contract.methods.requests(i).call()
+            //         console.log(request, "request", i )
+            //     }
+            // }
+            // catch {
+            //     console.log("koniec requestów")
+            // }
 
 
             // load all trees
@@ -188,7 +190,10 @@ const App = () => {
             try{
                 for(var i = 0; i<=totalSupply; i++){
                     let tree = await contract.methods.trees(i).call()
-                    treesTab.push(tree)
+
+                    let treeObj = {"id":i, "tree":tree}
+
+                    treesTab.push(treeObj)
                 }
             }
             catch {
@@ -200,6 +205,24 @@ const App = () => {
 
             if(account!== undefined && account!== "" && account!=="0x"){
                 await loadActiveAccountTrees()
+            }
+
+            //load trees on sale
+            let treesTabOnSale = []
+            try{
+                for(var i = 0; i<=totalSupply; i++){
+                    let tree = await contract.methods.sales(i).call()
+                    let treeObj = {"tree":tree}
+                    console.log(treeObj, tree, "ONSALE", totalSupply)
+                    treesTabOnSale.push(treeObj)
+                }
+            }
+            catch {
+                console.log("koniec drzew on sale")
+            }
+            finally {
+                //console.log(treesTabOnSale)
+                setTreesOnSale([...treesTabOnSale])
             }
         }
     }
@@ -224,6 +247,22 @@ const App = () => {
 
     }
 
+    const putOnSale = async (tokenId) => {
+        console.log("PUT ON SALE", tokenId)
+        if(account!="" && account!= undefined && tokenId!==undefined && tokenId!==null){
+            console.log("PUT ON SALE")
+            await contract.methods.putTreeOnSale(tokenId,Web3.utils.toWei(String(1), 'ether')).send({ from: account})
+                .once('receipt', async(receipt) => {
+                    console.log("put on sale")
+
+                    await loadWeb3()
+                    //await loadBlockChainData()
+                })
+            // await loadBlockChainData()
+            // console.log(totalSupply, "total supply po")
+        }
+    }
+
 
 
   return (
@@ -231,7 +270,7 @@ const App = () => {
           <div className='App'>
               <WalletCard account={account} setAccount={setAccount} loadWeb3={loadWeb3} loadBlockChainData={async()=>{await loadBlockChainData()}}></WalletCard>
               <Nav />
-              <RouterSwitch contract={contract} account={account} trees={trees} mint={mint} totalSupply={totalSupply} accountsTrees={accountsTrees} accountBalance={accountBalance}/>
+              <RouterSwitch contract={contract} account={account} trees={trees} mint={mint} totalSupply={totalSupply} accountsTrees={accountsTrees} accountBalance={accountBalance} putOnSale={putOnSale} treesOnSale={treesOnSale}/>
 
           </div>
 

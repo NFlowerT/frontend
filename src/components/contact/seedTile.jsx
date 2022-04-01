@@ -3,12 +3,12 @@ import './css/seedTile.css'
 import seedImg from './images/seed.png'
 import {Link} from "react-router-dom";
 
-const SeedTile = ({ mint }) => {
+const SeedTile = ({ mint, id }) => {
 
     return (
         <Link className={'productPageLink'} to={'/productPage'}>
             <div className={"productTile"}>
-                <div className={"productPrice"}>200px</div>
+                <div className={"productPrice"}>{id}</div>
                 <div className={"productImage"}>
                     <img className={'modelImage'} src={seedImg} />
                 </div>
