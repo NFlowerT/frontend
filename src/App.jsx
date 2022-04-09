@@ -19,25 +19,38 @@ import RegistrationPage from './components/loginPage/registrationPage'
 import ProductPage from "./components/productPage/productPage";
 import WalletCard from "./components/wallet/wallet";
 import CatalogPage from "./components/contact/catalogPage";
+import * as net from "net";
 
 
-const RouterSwitch = ({ contract, account, trees, mint, totalSupply, accountsTrees, accountBalance, putOnSale, treesOnSale }) => {
+const RouterSwitch = ({ contract, account, trees, mint, totalSupply, accountsTrees, accountBalance, putOnSale, treesOnSale, buyTreeFromSale }) => {
   return (
       <Switch>
           <Route exact path='/' component={HomePage} />
-          <Route path='/gallery' component={() => (<GalleryPage trees={trees} totalSupply={totalSupply} accountsTrees={accountsTrees} accountBalance={accountBalance} putOnSale={putOnSale}/>)}/>
+          <Route path='/gallery' component={() => (<GalleryPage
+              trees={trees}
+              totalSupply={totalSupply}
+              accountsTrees={accountsTrees}
+              accountBalance={accountBalance}
+              putOnSale={putOnSale}/>)}/>
           <Route path='/login' component={LoginPage}/>
           <Route path='/registration' component={RegistrationPage}/>
           <Route path='/productPage' component={ProductPage}/>
-          <Route path='/catalog' component={() =>(<CatalogPage contract={contract} account={account} mint={mint} treesOnSale={treesOnSale}/>)}/>
+          <Route path='/catalog' component={() =>(<CatalogPage
+              contract={contract}
+              account={account} mint={mint}
+              treesOnSale={treesOnSale}
+              buyTreeFromSale={buyTreeFromSale}
+            />)}/>
       </Switch>
   )
 }
 
 const App = () => {
     //const [provider, setProvider] = useState(undefined)
-    const [account, setAccount] = useState("")
+    const [web3, setWeb3] = useState()
+    const [account, setAccount] = useState(undefined)
     const [contract, setContract] = useState(undefined)
+    const [networkData, setNetworkData] = useState(undefined)
     const [totalSupply, setTotalSupply] = useState(0)
     const [trees, setTrees] = useState([])
     const [treesOnSale, setTreesOnSale] = useState([])
@@ -45,45 +58,91 @@ const App = () => {
     const [accountBalance, setAccountBalance] = useState(0)
     //const [loadData, setLoadData] = useState()
 
+    //load web3
+    useEffect(async()=>{
+        console.log("useeff loas")
+        loadWeb3()
+    }, [])
+
 
     // useEffect(async() => {
-        // if(window.ethereum) {
-        //     window.ethereum.on('chainChanged', async() => {
-        //         alert("zmiana chaina")
-        //         await loadWeb3()
-        //         await loadBlockChainData()
-        //     })
-        //     window.ethereum.on('accountsChanged', async() => {
-        //         await loadWeb3()
-        //         await loadBlockChainData()
-        //     })
-        // }
-    // setInterval(loadBlockChainData, 10000)
+    //     if(window.ethereum) {
+    //         // window.ethereum.on('chainChanged', async() => {
+    //         //     alert("zmiana chaina")
+    //         //     await loadWeb3()
+    //         //     await loadBlockChainData()
+    //         // })
+    //         // window.ethereum.on('accountsChanged', async() => {
+    //         //     await loadWeb3()
+    //         //     await loadBlockChainData()
+    //         // })
+    //     }
+    // // setInterval(loadBlockChainData, 10000)
     // })
 
-    useEffect(async ()=> {
-        //clearInterval(loadInterval)
-        await loadWeb3()
-        await loadBlockChainData()
-        //let loadInterval=setInterval(loadBlockChainData, 15000)
-    }, [account])
+    // useEffect(async ()=> {
+    //     //clearInterval(loadInterval)
+    //     await loadWeb3()
+    //     //await loadBlockChainData()
+    //     //let loadInterval=setInterval(loadBlockChainData, 15000)
+    // }, [account])
+
+    // useEffect(()=>{
+    //     console.log(trees)
+    // },[trees])
+
+    useEffect(async()=>{
+        if(web3!==undefined){
+            console.log(web3)
+            const networkId = await web3.eth.net.getId()
+            const network = HelloWorld.networks[networkId]
+            setNetworkData(network)
+        }
+
+    }, [web3])
+
+    useEffect(async()=>{
+        console.log(networkData, account)
+        if(networkData!==undefined ){
+            await loadBlockChainData()
+            //load active account's balance and trees
+            // if(contract!==undefined ){
+            //     console.log("use effect network")
+            //     await loadActiveAccountTrees()
+            //
+            // }
+        }
+
+    }, [networkData])
     useEffect(()=>{
-        console.log(trees)
-    },[trees])
+        loadTrees()
+        smartContractListener()
+    }, [contract])
 
+    useEffect(async()=>{
+        await changeAccountHandler()
+    }, [account])
 
+    const changeAccountHandler = async()=>{
+        if(account!==undefined && account!=="" && account!=="0x0"){
+            await loadActiveAccountTrees()
+
+        }
+    }
 
     const loadWeb3 = async () => {
         if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
             await window.ethereum.enable()
 
-            // await loadBlockChainData()
+            setWeb3(new Web3(Web3.givenProvider || "ws://localhost:8545"))
+            console.log("load web3")
 
-            //load active account's balance and trees
-            if(contract!==undefined && account!== undefined && account!== "" && account!=="0x"){
-                await loadActiveAccountTrees()
 
-            }
+            // //load active account's balance and trees
+            // if(contract!==undefined && account!== undefined && account!== "" && account!=="0x"){
+            //     await loadActiveAccountTrees()
+            //
+            // }
         }
         else{
             console.log("install Metamask")
@@ -91,9 +150,65 @@ const App = () => {
 
 
     }
-    const loadActiveAccountTrees = async () => {
-        console.log("load my trees and balance")
+    const smartContractListener = async() =>{
+        console.log("listeming", contract)
         if(contract){
+
+            contract.events.Transfer({}, async(error, data)=>{
+                if (error) {
+                    console.log("😥 " + error.message);
+                } else {
+                   // setMessage(data.returnValues[1]);
+                    console.log("🎉 Your message has been updated!");
+                    await loadTrees()
+                    await loadActiveAccountTrees()
+                }
+            })
+            contract.events.TreeRequested({}, async(error, data)=>{
+                if (error) {
+                    console.log("😥 " + error.message);
+                } else {
+                    // setMessage(data.returnValues[1]);
+                    console.log("🎉 Your message has been updated!");
+                    await loadTrees()
+                    await loadActiveAccountTrees()
+                }
+            })
+            contract.events.BoughtTreeOnSale({}, async(error, data)=>{
+                if (error) {
+                    console.log("😥 " + error.message);
+                } else {
+                    // setMessage(data.returnValues[1]);
+                    console.log("🎉 Your message has been updated!");
+                    await loadTrees()
+                    await loadActiveAccountTrees()
+                }
+            })
+            contract.events.SaleEnded({}, async(error, data)=>{
+                if (error) {
+                    console.log("😥 " + error.message);
+                } else {
+                    // setMessage(data.returnValues[1]);
+                    console.log("🎉 Your message has been updated!");
+                    await loadTrees()
+                    await loadActiveAccountTrees()
+                }
+            })
+            contract.events.TreePutOnSale({}, async(error, data)=>{
+                if (error) {
+                    console.log("😥 " + error.message);
+                } else {
+                    // setMessage(data.returnValues[1]);
+                    console.log("🎉 Your message has been updated!");
+                    await loadTrees()
+                    await loadActiveAccountTrees()
+                }
+            })
+        }
+    }
+    const loadActiveAccountTrees = async () => {
+        console.log("load my trees and balance", contract)
+        if(contract && account!==undefined && account!== "" && account!=="0x0"){
             let balance = await contract.methods.balanceOf(account).call();
             console.log("balans: ", balance)
             setAccountBalance(balance)
@@ -128,12 +243,14 @@ const App = () => {
 
     }
 
+
+
     const loadBlockChainData = async() => {
         console.log("load blockchaindata", account)
-        const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
-
-        const networkId = await web3.eth.net.getId()
-        const networkData = HelloWorld.networks[networkId]
+        //const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545"
+        if(web3===undefined || networkData===undefined) return 0;
+        // const networkId = await web3.eth.net.getId()
+        // const networkData = HelloWorld.networks[networkId]
 
         if(networkData){
             const abi = HelloWorld.abi
@@ -167,63 +284,76 @@ const App = () => {
             //     alert("error")
             //
             // });
+            // web3.eth.subscribe('newBlockHeaders' , ()=>{
+            //     console.log("looolll")
+            // });
+            await loadTrees()
+
+        }
+    }
+    const loadTrees = async() =>{
+        console.log("load trees", contract, account)
+        if(contract== undefined) return 0
+        console.log("load trees")
+        //load totalSupply
+        const totalSupply = await contract.methods.totalSupply().call()
+        setTotalSupply(totalSupply)
+        console.log("toteal supply", totalSupply)
+
+        //load requests to mint tree
+        try{
+            for(var i = 0; ; i++){
+                let request = await contract.methods.requests(i).call()
+                console.log(request, "request", i )
+            }
+        }
+        catch {
+            console.log("koniec requestów")
+        }
 
 
-            //load totalSupply
-            const totalSupply = await contract.methods.totalSupply().call()
-            setTotalSupply(totalSupply)
+        // load all trees
+        let treesTab = []
+        try{
+            for(var i = 0; i<=totalSupply; i++){
+                let tree = await contract.methods.trees(i).call()
 
-            //load requests to mint tree
-            // try{
-            //     for(var i = 0; ; i++){
-            //         let request = await contract.methods.requests(i).call()
-            //         console.log(request, "request", i )
-            //     }
-            // }
-            // catch {
-            //     console.log("koniec requestów")
-            // }
+                let treeObj = {"id":i, "tree":tree}
 
+                treesTab.push(treeObj)
+            }
+        }
+        catch {
+            console.log("koniec drzew")
+        }
+        finally {
+            setTrees([...treesTab])
+        }
 
-            // load all trees
-            let treesTab = []
-            try{
-                for(var i = 0; i<=totalSupply; i++){
-                    let tree = await contract.methods.trees(i).call()
+        //load account's trees
+        console.log(account, "looooooooooll")
+        if(account!== undefined && account!== "" && account!=="0x"){
+             console.log("dfgvmfdkgjdkic")
+            await loadActiveAccountTrees()
+        }
 
+        //load trees on sale
+        let treesTabOnSale = []
+        try{
+            for(var i = 0; i<=totalSupply; i++){
+                let tree = await contract.methods.sales(i).call()
+                if(tree.active){
                     let treeObj = {"id":i, "tree":tree}
-
-                    treesTab.push(treeObj)
-                }
-            }
-            catch {
-                console.log("koniec drzew")
-            }
-            finally {
-                setTrees([...treesTab])
-            }
-
-            if(account!== undefined && account!== "" && account!=="0x"){
-                await loadActiveAccountTrees()
-            }
-
-            //load trees on sale
-            let treesTabOnSale = []
-            try{
-                for(var i = 0; i<=totalSupply; i++){
-                    let tree = await contract.methods.sales(i).call()
-                    let treeObj = {"tree":tree}
                     console.log(treeObj, tree, "ONSALE", totalSupply)
                     treesTabOnSale.push(treeObj)
                 }
             }
-            catch {
-                console.log("koniec drzew on sale")
-            }
-            finally {
-                //console.log(treesTabOnSale)
-                setTreesOnSale([...treesTabOnSale])
-            }
+        }
+        catch {
+            console.log("koniec drzew on sale")
+        }
+        finally {
+            setTreesOnSale([...treesTabOnSale])
         }
     }
 
@@ -263,14 +393,51 @@ const App = () => {
         }
     }
 
+    const buyTreeFromSale = async (tokenId, price) => {
+        console.log("BUY FROM SALE", tokenId)
+        if(account!="" && account!= undefined && tokenId!==undefined && tokenId!==null && price!==undefined && price!=null){
+            await contract.methods.buyTree(tokenId).send({ from: account, value: String(price)})
+                .once('receipt', async(receipt) => {
+                    console.log("put on sale")
+
+                    await loadWeb3()
+
+                    await contract.methods.withdraw().send({ from: account})
+                        .once('receipt', async(receipt) => {
+                            console.log("withdraw")
+
+                            await loadWeb3()
+
+                            //await loadBlockChainData()
+                        })
+                    // await loadBlockChainData()
+                    // console.log(totalSupply, "total supply po")
+                })
+
+
+        }
+    }
+
 
 
   return (
       <Router>
           <div className='App'>
-              <WalletCard account={account} setAccount={setAccount} loadWeb3={loadWeb3} loadBlockChainData={async()=>{await loadBlockChainData()}}></WalletCard>
+              <WalletCard account={account}
+                          setAccount={setAccount}
+                          loadWeb3={loadWeb3}
+                          loadBlockChainData={async()=>{await loadBlockChainData()}}></WalletCard>
               <Nav />
-              <RouterSwitch contract={contract} account={account} trees={trees} mint={mint} totalSupply={totalSupply} accountsTrees={accountsTrees} accountBalance={accountBalance} putOnSale={putOnSale} treesOnSale={treesOnSale}/>
+              <RouterSwitch contract={contract}
+                            account={account}
+                            trees={trees}
+                            mint={mint}
+                            totalSupply={totalSupply}
+                            accountsTrees={accountsTrees}
+                            accountBalance={accountBalance}
+                            putOnSale={putOnSale}
+                            treesOnSale={treesOnSale}
+                            buyTreeFromSale={buyTreeFromSale}/>
 
           </div>
 

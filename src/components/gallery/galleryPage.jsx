@@ -10,10 +10,12 @@ const GalleryPage = ({ trees, totalSupply, accountsTrees, accountBalance, putOnS
 
     // to test withour real blockchain trees
     const renderProductTileAll = () => {
+        console.log(trees)
+        if(trees.length===0) return 0
         const productTiles = []
-        for (let i = 0; i<totalSupply; i++) {
-            console.log(trees[i].genes, "tilee", trees)
-            productTiles.push(<ProductTile key={null} id={trees[i].tree.id} putOnSale={null} />)
+        for (let i = 0; i<trees.length; i++) {
+            //console.log(trees[i].tree.genes, "tilee", trees)
+            productTiles.push(<ProductTile key={null} id={trees[i].id} genes={trees[i].tree.genes} putOnSale={null} />)
         }
         return (
             <section className={"productsContainer"}>
@@ -24,10 +26,10 @@ const GalleryPage = ({ trees, totalSupply, accountsTrees, accountBalance, putOnS
 
     const renderProductTileAccount = () => {
             const productTiles = []
-            console.log("tile",accountsTrees)
+            //console.log("tile",accountsTrees)
             for (let i = 0; i<accountBalance; i++) {
                 console.log(accountsTrees[i], "tile")
-                productTiles.push(<ProductTile id={accountsTrees[i].id} putOnSale={putOnSale}/>)
+                productTiles.push(<ProductTile id={accountsTrees[i].id} genes={trees[i].tree.genes} putOnSale={putOnSale}/>)
             }
             return (
                 <section className={"productsContainer"}>

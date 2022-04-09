@@ -4,12 +4,20 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 contract HelloWorld is ERC721,ERC721Enumerable{
 
+    event TreeRequested(address requesting);
+
+    event TreePutOnSale(address saler,uint TreeId);
+
+    event BoughtTreeOnSale(address buyer, address seller,uint saleId);
+
+    event SaleEnded(uint saleId);
+
     bytes32 PROVANANCE_HASH = 0x0;
 
     //id of the new token
     uint public newTokenId;
 
-    address payable owner;
+    address payable public  owner;
 
     mapping(uint => uint) public tokenIdToSaleId;
     mapping(uint => bool) public isOnSale;
@@ -72,6 +80,7 @@ contract HelloWorld is ERC721,ERC721Enumerable{
         isOnSale[_treeId] =true;
         tokenIdToSaleId[_treeId] = sales.length;
         sales.push(sale);
+        emit TreePutOnSale(msg.sender, _treeId);
     }
 
     //Mozesz kupic nft o danym Id po wystawionej cenie jesli jest na sprzedaz
@@ -82,6 +91,7 @@ contract HelloWorld is ERC721,ERC721Enumerable{
         isOnSale[sales[_saleId].TreeId] = false;
         sales[_saleId].active = false;
         _transfer(sales[_saleId].owner,msg.sender , sales[_saleId].TreeId);
+        emit BoughtTreeOnSale(msg.sender, sales[_saleId].owner, _saleId);
     }
 
     //jesli jednak nie chcesz sprzedac swojego drzewka mozesz "zdjac je z "marketu"
@@ -89,6 +99,7 @@ contract HelloWorld is ERC721,ERC721Enumerable{
         require(sales[_saleId].owner == msg.sender, "you are not owner of this sale");
         sales[_saleId].active = false;
         isOnSale[sales[_saleId].TreeId] = false;
+        emit SaleEnded(_saleId);
     }
     //Uzytkownik prosi o utworzenie Nft dla niego i my je potem mintujemy
     function requestTree() external payable isUnderMax(){
@@ -96,6 +107,7 @@ contract HelloWorld is ERC721,ERC721Enumerable{
         ownerToFunds[owner] += msg.value;
         Request memory request = Request(msg.sender,true);
         requests.push(request);
+        emit TreeRequested(msg.sender);
     }
 
     constructor() ERC721("Tree", "Tre"){
