@@ -98,6 +98,8 @@ const App = () => {
             const networkId = await web3.eth.net.getId()
             const network = HelloWorld.networks[networkId]
             setNetworkData(network)
+            // Initializing web3.eth method
+            var block = web3.eth.getBlockNumber().then(console.log);
         }
 
     }, [web3])
@@ -134,20 +136,12 @@ const App = () => {
     const loadWeb3 = async () => {
         if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
             await window.ethereum.enable()
-
-            setWeb3(new Web3(Web3.givenProvider || "ws://localhost:8545"))
-            console.log("load web3")
-            // //load active account's balance and trees
-            // if(contract!==undefined && account!== undefined && account!== "" && account!=="0x"){
-            //     await loadActiveAccountTrees()
-            //
-            // }
         }
         else{
             console.log("install Metamask")
-
         }
 
+        setWeb3(new Web3(Web3.givenProvider || "ws://localhost:7545"))
 
     }
     const smartContractListener = async() =>{
