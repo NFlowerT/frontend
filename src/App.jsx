@@ -201,8 +201,9 @@ const App = () => {
         }
     }
     const loadActiveAccountTrees = async () => {
-        console.log("load my trees and balance", contract)
+        console.log("load my trees and balance", contract, account)
         if(contract && account!==undefined && account!== "" && account!=="0x0"){
+            console.log("load my trees and balance", contract, account)
             let balance = await contract.methods.balanceOf(account).call();
             console.log("balans: ", balance)
             setAccountBalance(balance)
@@ -224,7 +225,7 @@ const App = () => {
             }
             finally {
                 console.log(treesTab)
-                //setAccountsTrees([...treesTab])
+                setAccountsTrees([...treesTab])
             }
 
             // for(var i = 0; ; i++){
@@ -232,28 +233,28 @@ const App = () => {
             //     console.log(tree, "add current account's trees")
             //     setAccountsTrees([...accountsTrees, tree])
             // }
-            console.log("[[[ ", accountsTrees)
-            let newAcctrees = []
-            treesOnSale.forEach((tree, index) =>{
-                if(tree.tree.owner.toLowerCase() == account && tree.tree.active){
-                    console.log("wchodzi",tree.tree.owner.toLowerCase() == account, account, accountsTrees)
-                     treesTab.forEach(t => {
-                         console.log(t.id, tree.tree.TreeId, "dfd")
-                        if( t.id == tree.tree.TreeId) {
-                            console.log("jest")
-                            t.saleId = index
-                            console.log(t)
-                            newAcctrees.push(t)
-                        }
-                        else {
-                            t.saleId = null
-                            newAcctrees.push(t)
-                        }
-                    })
-                }
-            })
-            console.log(newAcctrees, "[[[[[[[[[[[[")
-            setAccountsTrees(newAcctrees)
+            // console.log("[[[ ", accountsTrees)
+            // let newAcctrees = []
+            // treesOnSale.forEach((tree, index) =>{
+            //     if(tree.tree.owner.toLowerCase() == account && tree.tree.active){
+            //         console.log("wchodzi",tree.tree.owner.toLowerCase() == account, account, accountsTrees)
+            //          treesTab.forEach(t => {
+            //              console.log(t.id, tree.tree.TreeId, "dfd")
+            //             if( t.id == tree.tree.TreeId) {
+            //                 console.log("jest")
+            //                 t.saleId = index
+            //                 console.log(t)
+            //                 newAcctrees.push(t)
+            //             }
+            //             else {
+            //                 t.saleId = null
+            //                 newAcctrees.push(t)
+            //             }
+            //         })
+            //     }
+            // })
+            // console.log(newAcctrees, "[[[[[[[[[[[[")
+            // setAccountsTrees(newAcctrees)
 
         }
 
