@@ -16,7 +16,7 @@ const WalletCard = ({ account, setAccount,loadWeb3, loadBlockChainData }) => {
     //when user change account in MetaMask wallet
     const connectAutoWalletHandler = (account) => {
         console.log("connectAutoWalletHandler")
-        setAccount(account[0])
+        setAccount(account[0].toLowerCase())
     }
 
     //when user click connection button

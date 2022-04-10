@@ -5,7 +5,7 @@ import { FaBars } from 'react-icons/fa'
 import ProductTile from "./productTile";
 
 
-const GalleryPage = ({ trees, totalSupply, accountsTrees, accountBalance, putOnSale }) => {
+const GalleryPage = ({ trees, totalSupply, accountsTrees, accountBalance, putOnSale, endSale }) => {
 
 
     // to test withour real blockchain trees
@@ -28,8 +28,8 @@ const GalleryPage = ({ trees, totalSupply, accountsTrees, accountBalance, putOnS
             const productTiles = []
             //console.log("tile",accountsTrees)
             for (let i = 0; i<accountBalance; i++) {
-                console.log(accountsTrees[i], "tile")
-                productTiles.push(<ProductTile id={accountsTrees[i].id} genes={trees[i].tree.genes} putOnSale={putOnSale}/>)
+                console.log(accountsTrees[i], "tile saleid ", trees[i].saleId)
+                productTiles.push(<ProductTile id={accountsTrees[i].id} genes={trees[i].tree.genes} putOnSale={putOnSale} saleId={trees[i].saleId} endSale={endSale}/>)
             }
             return (
                 <section className={"productsContainer"}>

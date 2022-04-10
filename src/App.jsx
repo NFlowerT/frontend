@@ -22,7 +22,7 @@ import CatalogPage from "./components/contact/catalogPage";
 import * as net from "net";
 
 
-const RouterSwitch = ({ contract, account, trees, mint, totalSupply, accountsTrees, accountBalance, putOnSale, treesOnSale, buyTreeFromSale }) => {
+const RouterSwitch = ({ contract, account, trees, mint, totalSupply, accountsTrees, accountBalance, putOnSale, treesOnSale, buyTreeFromSale, endSale }) => {
   return (
       <Switch>
           <Route exact path='/' component={HomePage} />
@@ -31,7 +31,8 @@ const RouterSwitch = ({ contract, account, trees, mint, totalSupply, accountsTre
               totalSupply={totalSupply}
               accountsTrees={accountsTrees}
               accountBalance={accountBalance}
-              putOnSale={putOnSale}/>)}/>
+              putOnSale={putOnSale}
+              endSale={endSale}/>)}/>
           <Route path='/login' component={LoginPage}/>
           <Route path='/registration' component={RegistrationPage}/>
           <Route path='/productPage' component={ProductPage}/>
@@ -136,8 +137,6 @@ const App = () => {
 
             setWeb3(new Web3(Web3.givenProvider || "ws://localhost:8545"))
             console.log("load web3")
-
-
             // //load active account's balance and trees
             // if(contract!==undefined && account!== undefined && account!== "" && account!=="0x"){
             //     await loadActiveAccountTrees()
@@ -146,6 +145,7 @@ const App = () => {
         }
         else{
             console.log("install Metamask")
+
         }
 
 
@@ -230,7 +230,7 @@ const App = () => {
             }
             finally {
                 console.log(treesTab)
-                setAccountsTrees([...treesTab])
+                //setAccountsTrees([...treesTab])
             }
 
             // for(var i = 0; ; i++){
@@ -239,8 +239,59 @@ const App = () => {
             //     setAccountsTrees([...accountsTrees, tree])
             // }
             console.log("[[[ ", accountsTrees)
+            let newAcctrees = []
+            treesOnSale.forEach((tree, index) =>{
+                if(tree.tree.owner.toLowerCase() == account && tree.tree.active){
+                    console.log("wchodzi",tree.tree.owner.toLowerCase() == account, account, accountsTrees)
+                     treesTab.forEach(t => {
+                         console.log(t.id, tree.tree.TreeId, "dfd")
+                        if( t.id == tree.tree.TreeId) {
+                            console.log("jest")
+                            t.saleId = index
+                            console.log(t)
+                            newAcctrees.push(t)
+                        }
+                        else {
+                            t.saleId = null
+                            newAcctrees.push(t)
+                        }
+                    })
+                }
+            })
+            console.log(newAcctrees, "[[[[[[[[[[[[")
+            setAccountsTrees(newAcctrees)
+
         }
 
+
+    }
+
+    useEffect(()=>{
+        loadAccountsTreesOnSale()
+    },[accountsTrees])
+
+    const loadAccountsTreesOnSale = () => {
+        // let newAcctrees = []
+        // treesOnSale.forEach((tree, index) =>{
+        //     if(tree.tree.owner.toLowerCase() == account && tree.tree.active){
+        //         console.log("wchodzi",tree.tree.owner.toLowerCase() == account, account, accountsTrees)
+        //          accountsTrees.forEach(t => {
+        //              console.log(t.id, tree.tree.TreeId, "dfd")
+        //             if( t.id == tree.tree.TreeId) {
+        //                 console.log("jest")
+        //                 t.saleId = index
+        //                 console.log(t)
+        //                 newAcctrees.push(t)
+        //             }
+        //             else {
+        //                 t.saleId = null
+        //                 newAcctrees.push(t)
+        //             }
+        //         })
+        //     }
+        // })
+        // console.log(newAcctrees, "[[[[[[[[[[[[")
+        // //setAccountsTrees(newAcctrees)
     }
 
 
@@ -393,6 +444,22 @@ const App = () => {
         }
     }
 
+    const endSale = async (tokenIdOnSale) => {
+        console.log("END SALE", tokenIdOnSale)
+        if(account!="" && account!= undefined && tokenIdOnSale!==undefined && tokenIdOnSale!==null){
+            console.log("END SALE")
+            await contract.methods.endSale(tokenIdOnSale).send({ from: account})
+                .once('receipt', async(receipt) => {
+                    console.log("put on sale")
+
+                    await loadWeb3()
+                    //await loadBlockChainData()
+                })
+            // await loadBlockChainData()
+            // console.log(totalSupply, "total supply po")
+        }
+    }
+
     const buyTreeFromSale = async (tokenId, price) => {
         console.log("BUY FROM SALE", tokenId)
         if(account!="" && account!= undefined && tokenId!==undefined && tokenId!==null && price!==undefined && price!=null){
@@ -437,7 +504,8 @@ const App = () => {
                             accountBalance={accountBalance}
                             putOnSale={putOnSale}
                             treesOnSale={treesOnSale}
-                            buyTreeFromSale={buyTreeFromSale}/>
+                            buyTreeFromSale={buyTreeFromSale}
+                            endSale={endSale}/>
 
           </div>
 
