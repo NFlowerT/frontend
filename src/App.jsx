@@ -224,6 +224,7 @@ const App = () => {
                 console.log("koniec drzew")
             }
             finally {
+
                 console.log(treesTab)
                 setAccountsTrees([...treesTab])
             }
