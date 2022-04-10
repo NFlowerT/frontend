@@ -123,6 +123,7 @@ const App = () => {
     }, [contract])
 
     useEffect(async()=>{
+        console.log("ACCOUNT LOAD")
         await changeAccountHandler()
     }, [account])
 
@@ -142,6 +143,7 @@ const App = () => {
         }
 
         setWeb3(new Web3(Web3.givenProvider || "ws://localhost:7545"))
+        console.log("account =============", account)
 
     }
     const smartContractListener = async() =>{
@@ -200,8 +202,9 @@ const App = () => {
             })
         }
     }
+
     const loadActiveAccountTrees = async () => {
-        console.log("load my trees and balance", contract)
+        console.log("load my trees and balance", contract, account)
         if(contract && account!==undefined && account!== "" && account!=="0x0"){
             let balance = await contract.methods.balanceOf(account).call();
             console.log("balans: ", balance)
@@ -220,7 +223,7 @@ const App = () => {
                 }
             }
             catch {
-                console.log("koniec drzew")
+                console.log("koniec drzew account")
             }
             finally {
                 console.log(treesTab)
@@ -288,8 +291,6 @@ const App = () => {
         // //setAccountsTrees(newAcctrees)
     }
 
-
-
     const loadBlockChainData = async() => {
         console.log("load blockchaindata", account)
         //const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545"
@@ -336,6 +337,7 @@ const App = () => {
 
         }
     }
+
     const loadTrees = async() =>{
         console.log("load trees", contract, account)
         if(contract== undefined) return 0
@@ -349,7 +351,6 @@ const App = () => {
         try{
             for(var i = 0; ; i++){
                 let request = await contract.methods.requests(i).call()
-                console.log(request, "request", i )
             }
         }
         catch {
@@ -362,9 +363,7 @@ const App = () => {
         try{
             for(var i = 0; i<=totalSupply; i++){
                 let tree = await contract.methods.trees(i).call()
-
                 let treeObj = {"id":i, "tree":tree}
-
                 treesTab.push(treeObj)
             }
         }
@@ -389,7 +388,6 @@ const App = () => {
                 let tree = await contract.methods.sales(i).call()
                 if(tree.active){
                     let treeObj = {"id":i, "tree":tree}
-                    console.log(treeObj, tree, "ONSALE", totalSupply)
                     treesTabOnSale.push(treeObj)
                 }
             }
