@@ -228,6 +228,7 @@ const App = () => {
                 setAccountsTrees([...treesTab])
             }
 
+
             // for(var i = 0; ; i++){
             //     let tree = await contract.methods.tokenOfOwnerByIndex(account, i).call()
             //     console.log(tree, "add current account's trees")
