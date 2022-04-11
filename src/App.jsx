@@ -295,8 +295,6 @@ const App = () => {
 
     }
 
-
-
     const loadAccountsTreesOnSale = () => {
         // let newAcctrees = []
         // treesOnSale.forEach((tree, index) =>{

@@ -5,11 +5,13 @@ const WalletCard = ({ account, setAccount,loadWeb3, loadBlockChainData, accountF
     const [errorMessage, setErrorMessage] = useState(null);
     const [connButtonText, setConnButtonText] = useState('Connect Wallet');
 
-    useEffect(() => {
+    useEffect(async () => {
         if(window.ethereum && window.ethereum.isMetaMask){
             console.log("wallet")
             window.ethereum.on('accountsChanged',  connectAutoWalletHandler);
             window.ethereum.on('chainChanged', loadBlockChainData);
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            await connectWalletHandler(accounts[0])
         }
     }, []);
 
