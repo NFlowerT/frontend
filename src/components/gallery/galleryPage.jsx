@@ -15,7 +15,7 @@ const GalleryPage = ({ trees, totalSupply, accountsTrees, accountBalance, putOnS
         const productTiles = []
         for (let i = 0; i<trees.length; i++) {
             //console.log(trees[i].tree.genes, "tilee", trees)
-            productTiles.push(<ProductTile key={null} id={trees[i].id} genes={trees[i].tree.genes} putOnSale={null} />)
+            productTiles.push(<ProductTile key={null} id={trees[i].id} genes={trees[i].tree.genes} />)
         }
         return (
             <section className={"productsContainer"}>
@@ -27,9 +27,9 @@ const GalleryPage = ({ trees, totalSupply, accountsTrees, accountBalance, putOnS
     const renderProductTileAccount = () => {
             const productTiles = []
             //console.log("tile",accountsTrees)
-            for (let i = 0; i<accountBalance; i++) {
-                console.log(accountsTrees[i], "tile saleid ", trees[i].saleId)
-                productTiles.push(<ProductTile id={accountsTrees[i].id} genes={trees[i].tree.genes} putOnSale={putOnSale} saleId={trees[i].saleId} endSale={endSale}/>)
+            for (let i = 0; i<accountsTrees.length; i++) {
+                console.log(accountsTrees[i], "tile saleid ")
+                productTiles.push(<ProductTile id={accountsTrees[i].id} genes={accountsTrees[i].tree.genes} putOnSale={putOnSale} saleId={accountsTrees[i].saleId} endSale={endSale}/>)
             }
             return (
                 <section className={"productsContainer"}>

@@ -206,7 +206,7 @@ const App = () => {
     const loadActiveAccountTrees = async () => {
         console.log("load my trees and balance", contract, account)
         if(contract && account!==undefined && account!== "" && account!=="0x0"){
-            console.log("load my trees and balance", contract, account)
+            console.log("load my trees and balance", contract, account, "jest account")
             let balance = await contract.methods.balanceOf(account).call();
             console.log("balans: ", balance)
             setAccountBalance(balance)
@@ -216,10 +216,16 @@ const App = () => {
 
             let treesTab = []
             try{
-                for(var i = 0; i<=totalSupply; i++){
+                for(var i = 0; ; i++){
                     let tokenId = await contract.methods.tokenOfOwnerByIndex(account, i).call()
                     let tree = await contract.methods.trees(tokenId).call()
                     let treeObj = {"id":tokenId, "tree":tree}
+                    treesOnSale.forEach((treeOnsale, saleIndex) => {
+                        if(treeOnsale.tree.TreeId==tokenId){
+                            alert("tak")
+                            treeObj.saleId = treesOnSale[saleIndex].id
+                        }
+                    })
                     treesTab.push(treeObj)
                 }
             }
@@ -363,7 +369,7 @@ const App = () => {
         // load all trees
         let treesTab = []
         try{
-            for(var i = 0; i<=totalSupply; i++){
+            for(var i = 0; ; i++){
                 let tree = await contract.methods.trees(i).call()
                 let treeObj = {"id":i, "tree":tree}
                 treesTab.push(treeObj)
@@ -386,10 +392,12 @@ const App = () => {
         //load trees on sale
         let treesTabOnSale = []
         try{
-            for(var i = 0; i<=totalSupply; i++){
+            for(var i = 0; ; i++){
                 let tree = await contract.methods.sales(i).call()
+                console.log("===============")
                 if(tree.active){
                     let treeObj = {"id":i, "tree":tree}
+                    console.log("on sale, ", treeObj)
                     treesTabOnSale.push(treeObj)
                 }
             }

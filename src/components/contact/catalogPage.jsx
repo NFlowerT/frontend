@@ -12,7 +12,7 @@ const CatalogPage = ({contract, account, mint, treesOnSale, buyTreeFromSale} ) =
         const productTiles = []
         for (let i = 0; i<treesOnSale.length; i++) {
             console.log(treesOnSale, treesOnSale.length)
-            productTiles.push(<SeedTile treeId={treesOnSale[i].tree.TreeId} saleId={i} contract={contract} account={account} buyTreeFromSale={buyTreeFromSale} price={treesOnSale[i].tree.valueWei}/>)
+            productTiles.push(<SeedTile treeId={treesOnSale[i].tree.TreeId} saleId={treesOnSale[i].id} contract={contract} account={account} buyTreeFromSale={buyTreeFromSale} price={treesOnSale[i].tree.valueWei}/>)
         }
         return (
             <section className={"productsContainer"}>

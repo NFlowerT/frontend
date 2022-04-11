@@ -14,7 +14,7 @@ const ProductTile = ({ id , putOnSale, genes, saleId, endSale}) => {
                 </div>
                 <div className={"productTitle"}>Dąb Maksymiliański</div>
                 <button onClick={()=>{putOnSale(id)}}>sale</button>
-                {(saleId!==undefined)? <button onClick={()=>{endSale(id)}}>end sale</button> :null}
+                {(saleId!==undefined)? <button onClick={()=>{endSale(saleId)}}>end sale</button> :null}
             </div>
         </Link>
     )
