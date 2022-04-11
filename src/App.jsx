@@ -50,6 +50,7 @@ const App = () => {
     //const [provider, setProvider] = useState(undefined)
     const [web3, setWeb3] = useState()
     const [account, setAccount] = useState(undefined)
+    const [accountFounds, setAccountFounds] = useState(undefined)
     const [contract, setContract] = useState(undefined)
     const [networkData, setNetworkData] = useState(undefined)
     const [totalSupply, setTotalSupply] = useState(0)
@@ -127,10 +128,32 @@ const App = () => {
         await changeAccountHandler()
     }, [account])
 
+    useEffect(()=>{
+        loadAccountsTreesOnSale()
+    },[accountsTrees])
+
     const changeAccountHandler = async()=>{
         if(account!==undefined && account!=="" && account!=="0x0"){
             await loadActiveAccountTrees()
+            await loadAccountFunds()
+        }
+    }
+    const loadAccountFunds = async () =>{
+        if(account!==undefined && account!=="" && account!=="0x0" && contract){
+            let founds = await contract.methods.ownerToFunds(account).call()
+            console.log(founds)
+            setAccountFounds(founds)
+        }
+    }
 
+    const receiveFunds = async () => {
+        if(account!==undefined && account!=="" && account!=="0x0" && contract && accountFounds!=0) {
+            await contract.methods.withdraw().send({from: account})
+                .once('receipt', async(receipt) => {
+                console.log("zwrocono srodki")
+                    await loadAccountFunds()
+                //await loadBlockChainData()
+            })
         }
     }
 
@@ -146,6 +169,7 @@ const App = () => {
         console.log("account =============", account)
 
     }
+
     const smartContractListener = async() =>{
         console.log("listeming", contract)
         if(contract){
@@ -271,9 +295,7 @@ const App = () => {
 
     }
 
-    useEffect(()=>{
-        loadAccountsTreesOnSale()
-    },[accountsTrees])
+
 
     const loadAccountsTreesOnSale = () => {
         // let newAcctrees = []
@@ -471,14 +493,14 @@ const App = () => {
 
                     await loadWeb3()
 
-                    await contract.methods.withdraw().send({ from: account})
-                        .once('receipt', async(receipt) => {
-                            console.log("withdraw")
-
-                            await loadWeb3()
-
-                            //await loadBlockChainData()
-                        })
+                    // await contract.methods.withdraw().send({ from: account})
+                    //     .once('receipt', async(receipt) => {
+                    //         console.log("withdraw")
+                    //
+                    //         await loadWeb3()
+                    //
+                    //         //await loadBlockChainData()
+                    //     })
                     // await loadBlockChainData()
                     // console.log(totalSupply, "total supply po")
                 })
@@ -495,7 +517,9 @@ const App = () => {
               <WalletCard account={account}
                           setAccount={setAccount}
                           loadWeb3={loadWeb3}
-                          loadBlockChainData={async()=>{await loadBlockChainData()}}></WalletCard>
+                          loadBlockChainData={async()=>{await loadBlockChainData()}}
+                          accountFounds={accountFounds}
+                          receiveFunds={receiveFunds}></WalletCard>
               <Nav />
               <RouterSwitch contract={contract}
                             account={account}
@@ -507,7 +531,8 @@ const App = () => {
                             putOnSale={putOnSale}
                             treesOnSale={treesOnSale}
                             buyTreeFromSale={buyTreeFromSale}
-                            endSale={endSale}/>
+                            endSale={endSale}
+                            />
 
           </div>
 

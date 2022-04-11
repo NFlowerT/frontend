@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 
-const WalletCard = ({ account, setAccount,loadWeb3, loadBlockChainData }) => {
+const WalletCard = ({ account, setAccount,loadWeb3, loadBlockChainData, accountFounds, receiveFunds }) => {
 
     const [errorMessage, setErrorMessage] = useState(null);
     const [connButtonText, setConnButtonText] = useState('Connect Wallet');
@@ -47,6 +47,7 @@ const WalletCard = ({ account, setAccount,loadWeb3, loadBlockChainData }) => {
             </div>
             <div className='balanceDisplay'>
             </div>
+            founds: {accountFounds} <button onClick={receiveFunds}>recieve founds</button>
             {errorMessage}
         </div>
     );
